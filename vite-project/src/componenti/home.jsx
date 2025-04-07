@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 export function Home() {
   const [login, setLogin] = useState({
@@ -30,7 +31,7 @@ export function Home() {
             <button>Accedi</button>
           </div>
           <hr />
-          <button>Crea nuovo account!</button>
+          <Link to="/registrazione">Crea nuovo account!</Link>
         </div>
       </div>
     </>

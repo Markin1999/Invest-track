@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { useUserContext } from "../contesti/useContext";
+import { Link } from "react-router-dom";
 
 export function Registrazione() {
   const [data, setData] = useState({
