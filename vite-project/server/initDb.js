@@ -1,17 +1,22 @@
 import pgPromise from "pg-promise";
 
-const db = pgPromise()("postgres://postgres:Lggs290@localhost:5432/blackjack");
+export const db = pgPromise()(
+  "postgres://postgres:Lggs290@localhost:5432/Invest-track"
+);
 
 const setup = async () => {
   try {
     await db.none(`
-        CREATE TABLE IF NOT EXISTS USERS(
+
+      DROP TABLE IF EXISTS USERS;
+
+        CREATE TABLE IF NOT EXISTS users(
         id SERIAL PRIMARY KEY,
         nome TEXT,
         cognome TEXT,
         email TEXT UNIQUE,
         password TEXT
-        )
+        );
         `);
 
     console.log("Tabelle create correttamente");

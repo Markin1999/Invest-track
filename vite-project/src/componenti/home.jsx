@@ -25,9 +25,19 @@ export function Home() {
         <div>
           <div>
             <label htmlFor="">E-mail:</label>
-            <input type="text" name="email" onChange={handleChange} />
+            <input
+              type="text"
+              name="email"
+              value={login.email}
+              onChange={handleChange}
+            />
             <label htmlFor="">Password:</label>
-            <input type="text" name="password" onChange={handleChange} />
+            <input
+              type="text"
+              name="password"
+              value={login.password}
+              onChange={handleChange}
+            />
             <button>Accedi</button>
           </div>
           <hr />

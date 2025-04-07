@@ -8,7 +8,53 @@ export function Registrazione() {
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState("");
 
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    if (name === "password") {
+      if (
+        value.length < 6 ||
+        !/\d/.test(value) ||
+        !/[!@#$%^&*()]/.test(value)
+      ) {
+        setMessage(
+          "La password deve contenere almeno sei caratteri di cui almeno un carattere speciale e una lettera maiuscola"
+        );
+      } else {
+        setMessage("");
+      }
+    }
+
+    setData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:5002/registrazione`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const date = await response.json();
+      if (!response.ok) {
+        throw new Error("Errore durante la registrazione.");
+      }
+
+      setMessage("Registrazione effettuata con successo");
+      setData({
+        nome: "",
+        cognome: "",
+        email: "",
+        password: "",
+      });
+    } catch (error) {
+      setMessage(`Registrazione fallita: ${error.message}`);
+    }
+  };
   return (
     <form className="form registrazione" onSubmit={handleSubmit}>
       <label htmlFor="Nome">Nome:</label>
