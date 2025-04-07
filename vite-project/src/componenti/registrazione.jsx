@@ -39,10 +39,11 @@ export function Registrazione() {
         body: JSON.stringify(data),
       });
 
-      const date = await response.json();
       if (!response.ok) {
         throw new Error("Errore durante la registrazione.");
       }
+
+      const date = await response.json();
 
       setMessage("Registrazione effettuata con successo");
       setData({

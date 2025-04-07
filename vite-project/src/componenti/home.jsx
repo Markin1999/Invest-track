@@ -13,6 +13,25 @@ export function Home() {
     setLogin((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:5002/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Errore durante la registrazione.");
+      }
+
+      const date = await response.json();
+    } catch (error) {
+      setMessage(`Registrazione fallita: ${error.message}`);
+    }
+  };
+
   return (
     <>
       <div>
@@ -23,7 +42,7 @@ export function Home() {
           </h3>
         </div>
         <div>
-          <div>
+          <form onSubmit={handleSubmit}>
             <label htmlFor="">E-mail:</label>
             <input
               type="text"
@@ -38,8 +57,8 @@ export function Home() {
               value={login.password}
               onChange={handleChange}
             />
-            <button>Accedi</button>
-          </div>
+            <button type="submit">Accedi</button>
+          </form>
           <hr />
           <Link to="/registrazione">Crea nuovo account!</Link>
         </div>
