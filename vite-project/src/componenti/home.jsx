@@ -6,6 +6,9 @@ export function Home() {
     email: "",
     password: "",
   });
+  const [message, setMessage] = useState("");
+
+  const VITE_PORT = import.meta.env.VITE_PORT;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -13,20 +16,32 @@ export function Home() {
     setLogin((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5002/login`, {
+      const response = await fetch(`http://localhost:${VITE_PORT}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(login),
       });
+      let responseData;
+      try {
+        responseData = await response.json();
 
-      if (!response.ok) {
-        throw new Error("Errore durante la registrazione.");
+        const { token } = responseData;
+        sessionStorage.setItem("token", token);
+      } catch (error) {
+        throw new Error(error.message);
       }
 
-      const date = await response.json();
+      if (!response.ok) {
+        setMessage("Errore durante la registrazione.");
+        return;
+      } else {
+        setMessage("login effettuato con successo");
+      }
+
+      setMessage("Login effettuato con successo");
     } catch (error) {
       setMessage(`Registrazione fallita: ${error.message}`);
     }
@@ -42,7 +57,7 @@ export function Home() {
           </h3>
         </div>
         <div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleLogin}>
             <label htmlFor="">E-mail:</label>
             <input
               type="text"
@@ -59,6 +74,8 @@ export function Home() {
             />
             <button type="submit">Accedi</button>
           </form>
+          <hr />
+          {message && <p>{message}</p>}
           <hr />
           <Link to="/registrazione">Crea nuovo account!</Link>
         </div>

@@ -7,17 +7,17 @@ export const db = pgPromise()(
 const setup = async () => {
   try {
     await db.none(`
-
-      DROP TABLE IF EXISTS USERS;
-
-        CREATE TABLE IF NOT EXISTS users(
+      DROP TABLE IF EXISTS users;
+      
+      CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         nome TEXT,
         cognome TEXT,
         email TEXT UNIQUE,
-        password TEXT
-        );
-        `);
+        password TEXT,
+        token TEXT
+      );
+    `);
 
     console.log("Tabelle create correttamente");
   } catch (error) {

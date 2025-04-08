@@ -10,6 +10,8 @@ export function Registrazione() {
   });
   const [message, setMessage] = useState("");
 
+  const VITE_PORT = import.meta.env.VITE_PORT;
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -33,14 +35,18 @@ export function Registrazione() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5002/registrazione`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
+      const response = await fetch(
+        `http://localhost:${VITE_PORT}/registrazione`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error("Errore durante la registrazione.");
+        setMessage("Errore durante la registrazione.");
+        return;
       }
 
       const date = await response.json();
