@@ -43,13 +43,11 @@ export function Registrazione() {
           body: JSON.stringify(data),
         }
       );
-
+      const date = await response.json();
       if (!response.ok) {
-        setMessage("Errore durante la registrazione.");
+        setMessage(`Registrazione fallita: ${date.message}`);
         return;
       }
-
-      const date = await response.json();
 
       setMessage("Registrazione effettuata con successo");
       setData({
@@ -63,63 +61,100 @@ export function Registrazione() {
     }
   };
   return (
-    <form className="form registrazione" onSubmit={handleSubmit}>
-      <label htmlFor="Nome">Nome:</label>
-      <input
-        type="text"
-        name="nome"
-        id="nome"
-        placeholder="Nome..."
-        onChange={handleChange}
-        value={data.nome}
-        required
-      />
-      <label htmlFor="Cognome">Cognome:</label>
-      <input
-        type="text"
-        name="cognome"
-        id="cognome"
-        placeholder="Cognome..."
-        onChange={handleChange}
-        value={data.cognome}
-        required
-      />
-      <label htmlFor="email">Email:</label>
-      <input
-        type="email"
-        name="email"
-        id="email"
-        placeholder="Email..."
-        onChange={handleChange}
-        value={data.email}
-        required
-      />
-      <label htmlFor="Password">Password:</label>
-      <input
-        type="password"
-        name="password"
-        id="password"
-        placeholder="Password..."
-        onChange={handleChange}
-        value={data.password}
-        required
-      />
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+        <h1 className="mt-10 text-center text-7xl/6 font-bold tracking-tight text-green-600">
+          INVE$T-TRACK
+        </h1>
+      </div>
+      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          <label
+            htmlFor="Nome"
+            className="block text-sm/6 font-medium text-gray-900"
+          >
+            Nome:
+          </label>
+          <div className="mt-2">
+            <input
+              type="text"
+              name="nome"
+              className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+              id="nome"
+              placeholder="Nome..."
+              onChange={handleChange}
+              value={data.nome}
+              required
+            />
+          </div>
 
-      {message && <p className="err-msg"> {message}</p>}
+          <label
+            htmlFor="Cognome"
+            className="block text-sm/6 font-medium text-gray-900"
+          >
+            Cognome:
+          </label>
+          <input
+            type="text"
+            name="cognome"
+            id="cognome"
+            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+            placeholder="Cognome..."
+            onChange={handleChange}
+            value={data.cognome}
+            required
+          />
+          <label
+            htmlFor="email"
+            className="block text-sm/6 font-medium text-gray-900"
+          >
+            Email:
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+            placeholder="Email..."
+            onChange={handleChange}
+            value={data.email}
+            required
+          />
+          <label
+            htmlFor="Password"
+            className="block text-sm/6 font-medium text-gray-900"
+          >
+            Password:
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+            placeholder="Password..."
+            onChange={handleChange}
+            value={data.password}
+            required
+          />
+          <button
+            className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            disabled={message ? true : false}
+            type="submit"
+          >
+            Avanti
+          </button>
+          <hr className="my-2" />
+          {message && <p className="m-1 text-center">{message}</p>}
+          <hr className="my-2" />
 
-      <button
-        className="prosegui"
-        disabled={message ? true : false}
-        type="submit"
-      >
-        Avanti
-      </button>
-      <p>
-        Hai già un account?{" "}
-        <Link to="/" style={{ color: "#F7A441" }}>
-          Login
-        </Link>
-      </p>
-    </form>
+          <div className="m-1 justify-center flex gap-2">
+            <p>Hai gia un account?</p>
+            <Link to="/" className="text-green-600 hover:underline">
+              Login
+            </Link>
+          </div>
+        </form>
+      </div>
+    </div>
   );
 }

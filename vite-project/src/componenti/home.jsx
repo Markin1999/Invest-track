@@ -35,7 +35,7 @@ export function Home() {
       }
 
       if (!response.ok) {
-        setMessage(`Registrazione fallita: ${responseData.message}`);
+        setMessage(`Accesso fallito: ${responseData.message}`);
         return;
       } else {
         setMessage("login effettuato con successo");
@@ -49,21 +49,24 @@ export function Home() {
 
   return (
     <>
-      <div>
-        <div style={{ backgroundColor: "green" }}>
-          <h1>INVE$T-TRACK</h1>
-          <h3>
-            Controlla in ogni momento i tuoi investimenti e le news a riguardo
+      <div className="flex w-full items-center justify-between h-screen bg-gray-100 px-2 ">
+        <div className="rounded-lg w-full m-16">
+          <h1 className="text-green-600 text-6xl font-bold mb-4">
+            INVE$T-TRACK
+          </h1>
+          <h3 className="text-2xl text-gray-700">
+            Controlla in ogni momento i tuoi investimenti e le news a riguardo!
           </h3>
         </div>
-        <div>
-          <form onSubmit={handleLogin}>
+        <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm m-16 gap-2">
+          <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
             <label htmlFor="">E-mail:</label>
             <input
               type="text"
               name="email"
               value={login.email}
               onChange={handleChange}
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
             <label htmlFor="">Password:</label>
             <input
@@ -71,13 +74,26 @@ export function Home() {
               name="password"
               value={login.password}
               onChange={handleChange}
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
             />
-            <button type="submit">Accedi</button>
+            <button
+              type="submit"
+              className="bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700 w-fit mx-auto px-6"
+            >
+              Accedi
+            </button>
           </form>
-          <hr />
-          {message && <p>{message}</p>}
-          <hr />
-          <Link to="/registrazione">Crea nuovo account!</Link>
+          <hr className="my-2" />
+          {message && <p className="m-1 text-center">{message}</p>}
+          <hr className="my-2" />
+          <div className="m-1 text-center">
+            <Link
+              to="/registrazione"
+              className="inline-block text-green-600 hover:underline"
+            >
+              Crea nuovo account!
+            </Link>
+          </div>
         </div>
       </div>
     </>
