@@ -35,7 +35,7 @@ export function Home() {
       }
 
       if (!response.ok) {
-        setMessage("Errore durante la registrazione.");
+        setMessage(`Registrazione fallita: ${responseData.message}`);
         return;
       } else {
         setMessage("login effettuato con successo");

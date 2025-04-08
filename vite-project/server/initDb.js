@@ -7,9 +7,8 @@ export const db = pgPromise()(
 const setup = async () => {
   try {
     await db.none(`
-      DROP TABLE IF EXISTS users;
       
-      CREATE TABLE users (
+      CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
         nome TEXT,
         cognome TEXT,

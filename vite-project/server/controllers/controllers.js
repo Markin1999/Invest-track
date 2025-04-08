@@ -47,9 +47,7 @@ export const login = async (req, res) => {
     ]);
 
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Credenziali errate o utente non esistente" });
+      return res.status(400).json({ message: "Utente non trovato!" });
     }
 
     const match = await bcrypt.compare(password, user.password);
