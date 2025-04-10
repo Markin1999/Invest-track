@@ -8,14 +8,26 @@ const setup = async () => {
   try {
     await db.none(`
       
+      -- Tabella utenti
       CREATE TABLE IF NOT EXISTS users (
         id SERIAL PRIMARY KEY,
-        nome TEXT,
-        cognome TEXT,
-        email TEXT UNIQUE,
-        password TEXT,
-        token TEXT
+        nome TEXT NOT NULL,
+        cognome TEXT NOT NULL,
+        email TEXT UNIQUE NOT NULL,
+        password TEXT NOT NULL,
+        token TEXT 
       );
+
+      -- Tabella Investimenti
+      CREATE TABLE IF NOT EXISTS investments (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      company TEXT NOT NULL,
+      invested_amount NUMERIC(12,2) NOT NULL,
+      quantity INTEGER NOT NULL,
+      average_price NUMERIC(12,2),
+      created_at TIMESTAMP DEFAULT NOW()
+      )
     `);
 
     console.log("Tabelle create correttamente");

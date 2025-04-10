@@ -16,6 +16,8 @@
     "dotenv": "^16.4.7",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "pg-promise": "^11.13.0",
     "pgpromise": "^0.1.1",
     "react": "^19.0.0",

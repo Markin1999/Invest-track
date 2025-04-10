@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useUserContext } from "../contesti/useContext";
 
 export function Home() {
   const [login, setLogin] = useState({
@@ -7,6 +8,10 @@ export function Home() {
     password: "",
   });
   const [message, setMessage] = useState("");
+
+  const { fetchUserLogged } = useUserContext();
+
+  const navTo = useNavigate();
 
   const VITE_PORT = import.meta.env.VITE_PORT;
 
@@ -30,6 +35,8 @@ export function Home() {
 
         const { token } = responseData;
         sessionStorage.setItem("token", token);
+
+        await fetchUserLogged();
       } catch (error) {
         throw new Error(error.message);
       }
@@ -38,7 +45,7 @@ export function Home() {
         setMessage(`Accesso fallito: ${responseData.message}`);
         return;
       } else {
-        setMessage("login effettuato con successo");
+        navTo("/navbar");
       }
 
       setMessage("Login effettuato con successo");
@@ -85,7 +92,7 @@ export function Home() {
           </form>
           <hr className="my-2" />
           {message && <p className="m-1 text-center">{message}</p>}
-          <hr className="my-2" />
+          {message && <hr className="my-2" />}
           <div className="m-1 text-center">
             <Link
               to="/registrazione"

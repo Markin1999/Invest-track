@@ -82,3 +82,22 @@ export const login = async (req, res) => {
     return res.status(500).json({ message: error.message });
   }
 };
+
+export const getUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const userLogged = await db.oneOrNone(
+      `SELECT nome, cognome FROM users WHERE id = $1 `,
+      [userId]
+    );
+
+    if (userLogged) {
+      return res.status(200).json(userLogged);
+    }
+
+    return res.status(404).json({ message: "Utente non trovato" });
+  } catch (error) {
+    res.status(500).json({ message: "errore nella richiesta", error });
+  }
+};

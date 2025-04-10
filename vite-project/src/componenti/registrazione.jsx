@@ -61,7 +61,7 @@ export function Registrazione() {
     }
   };
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 ">
       <div className="min-h-full flex-col justify-center px-6 py-12 lg:px-8">
         <h1 className="mt-10 text-center text-7xl/6 font-bold tracking-tight text-green-600">
           INVE$T-TRACK
@@ -145,7 +145,7 @@ export function Registrazione() {
           </button>
           <hr className="my-2" />
           {message && <p className="m-1 text-center">{message}</p>}
-          <hr className="my-2" />
+          {message && <hr className="my-2" />}
 
           <div className="m-1 justify-center flex gap-2">
             <p>Hai gia un account?</p>
