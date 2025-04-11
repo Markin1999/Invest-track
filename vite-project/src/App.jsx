@@ -6,6 +6,7 @@ import { UserProvider } from "./contesti/useContext";
 import { Navbar } from "./componenti/Navbar";
 import { Header } from "./componenti/Header";
 import { TotalPage } from "./componenti/TotalPage";
+import { Investimento } from "./componenti/Investimento";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/" element={<Home />}></Route>
             <Route path="/registrazione" element={<Registrazione />}></Route>
             <Route path="/totalpage" element={<TotalPage />}></Route>
+            <Route path="/investimento" element={<Investimento />}></Route>
           </Routes>
         </UserProvider>
       </BrowserRouter>

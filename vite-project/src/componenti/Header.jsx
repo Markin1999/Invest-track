@@ -1,4 +1,7 @@
+import { useNavigate } from "react-router-dom";
+
 export function Header() {
+  const navTo = useNavigate();
   return (
     <header className="relative bg-[linear-gradient(135deg,_#1a73e8,_#3eaaf7)] px-4 pt-8 pb-16 text-white overflow-hidden">
       <div className="max-w-[1200px] m-auto relative z-20 text-center">
@@ -11,7 +14,10 @@ export function Header() {
           annota le tue strategie.
         </p>
 
-        <button className="bg-[#ffd600] text-[#333] px-[1.2rem] py-[0.8rem] border-none rounded-[6px] font-semibold text-[1rem] cursor-pointer transition-transform duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_4px_15px_rgba(0,0,0,0.2)]">
+        <button
+          onClick={() => navTo("/investimento")}
+          className="bg-[#ffd600] text-[#333] px-[1.2rem] py-[0.8rem] border-none rounded-[6px] font-semibold text-[1rem] cursor-pointer transition-transform duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_4px_15px_rgba(0,0,0,0.2)]"
+        >
           <i className="fas fa-plus-circle"></i> Aggiungi Nuovo Investimento
         </button>
       </div>
