@@ -45,7 +45,7 @@ export function Home() {
         setMessage(`Accesso fallito: ${responseData.message}`);
         return;
       } else {
-        navTo("/navbar");
+        navTo("/totalpage");
       }
 
       setMessage("Login effettuato con successo");
@@ -58,10 +58,10 @@ export function Home() {
     <>
       <div className="flex w-full items-center justify-between h-screen bg-gray-100 px-2 ">
         <div className="rounded-lg w-full m-16">
-          <h1 className="text-green-600 text-6xl font-bold mb-4">
+          <h1 className="text-green-600 text-6xl mb-4 font-semibold">
             INVE$T-TRACK
           </h1>
-          <h3 className="text-2xl text-gray-700">
+          <h3 className="text-[1.5rem] text-gray-700 font-medium">
             Controlla in ogni momento i tuoi investimenti e le news a riguardo!
           </h3>
         </div>
