@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navbar } from "./Navbar";
 import axios from "axios";
+import { useUserContext } from "../contesti/useContext";
 const VITE_PORT = import.meta.env.VITE_PORT;
 export function Investimento() {
+  const { user } = useUserContext();
+
   const [data, setData] = useState({
     date: "",
     ora: "",
@@ -12,7 +15,10 @@ export function Investimento() {
     totale: "",
   });
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(
+    `Ehi ciao ${user.nome}! Mi raccomando: compila tutti i campi, cerca il nome corretto dell'azienda, inserisci data e ora per calcolare con precisione il valore del tuo investimento.`
+  );
+
   const [suggerimenti, setSuggerimenti] = useState([]);
 
   const handleChange = async (e) => {
@@ -23,6 +29,27 @@ export function Investimento() {
       [name]: value,
     }));
   };
+  useEffect(() => {
+    const quantita = data.quantita;
+    const prezzo = data.Prezzo_Azione;
+
+    if (
+      typeof quantita === "number" ||
+      (typeof quantita === "string" && !isNaN(Number(quantita)))
+    ) {
+      if (
+        typeof prezzo === "number" ||
+        (typeof prezzo === "string" && !isNaN(Number(prezzo)))
+      ) {
+        const totale = Number(quantita) * Number(prezzo);
+
+        setData((prev) => ({
+          ...prev,
+          totale: Number(totale.toFixed(2)),
+        }));
+      }
+    }
+  }, [data.quantita, data.Prezzo_Azione]);
 
   const handlePrezzoStorico = async () => {
     try {
@@ -34,12 +61,21 @@ export function Investimento() {
           ora: data.ora,
         }
       );
+      if (!response.data.ok) {
+        setMessage(
+          "Dati mancanti: Inserisci data dell'investimento, ora dell'investimento e cerca il nome dell'azione"
+        );
+      }
 
       const prezzo = response.data.close;
 
       setData((prev) => ({ ...prev, Prezzo_Azione: prezzo.toFixed(2) })); // o gestisci come preferisci
     } catch (error) {
       console.error("Errore nella chiamata al backend:", error);
+      setMessage(
+        error.response?.data?.message ||
+          "⚠️ Dati mancanti: Verifica che data, ora e nome siano corretti, e che il mercato fosse aperto in quel momento"
+      );
     }
   };
 
@@ -63,25 +99,7 @@ export function Investimento() {
   return (
     <>
       <Navbar />
-      {/* Nuvoletta */}
-      <div className="flex flex-col items-center mt-10 space-y-3">
-        <div className="relative bg-white text-gray-800 p-5 rounded-2xl shadow-xl max-w-xs text-center font-semibold">
-          <div>
-            <p>
-              Ti consiglio di calcolare automaticamente il prezzo per azione per
-              essere molto piu precisi, ti basta compilare tutti i campi sopra.
-            </p>
-          </div>
-          {/* Triangolino */}
-          <div className="absolute left-1/2 -bottom-3 -translate-x-1/2 w-0 h-0 border-l-[12px] border-r-[12px] border-t-[12px] border-l-transparent border-r-transparent border-t-white"></div>
-        </div>
 
-        {/* Cerchio con operatore */}
-        <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl shadow-lg">
-          😊
-        </div>
-      </div>
-      {/*Fine */}
       <header className="relative bg-[linear-gradient(135deg,_#1a73e8,_#3eaaf7)] px-4 pt-8 pb-16 text-white overflow-hidden">
         <div className="max-w-[1200px] m-auto relative z-20 text-center">
           <h2 className="items-center text-[2rem] mb-4 font-semibold">
@@ -106,174 +124,161 @@ export function Investimento() {
           </svg>
         </div>
       </header>
-      <div
-        className=" w-full m-w- max-w-[650px]
-      bg-white
-      shadow-[0px_8px_18px_rgba(0,0,0,0.1)]
-      relative
-      mx-auto
-      -mt-8
-      mb-12
-      rounded-[10px]
-      p-8
-      border-t-[8px]
-      border-t-[#ffd600]"
-      >
-        <form className="space-y-5 ">
-          <h2 className="text-center text-[#1a73e8] text-[1.5em] mb-[1.5rem] font-semibold ">
-            Dettagli dell'investimento
-          </h2>
+      <div className=" w-screen flex justify-between items-center gap-5 px-10">
+        <div className="basis-0 grow flex justify-center">
+          <div className="max-w-[700px] w-full bg-white shadow-2xl rounded-xl p-8 border-t-[8px] border-[#ffd600] space-y-6">
+            <form className="space-y-6">
+              <h2 className="text-2xl font-bold text-center text-indigo-600">
+                📈 Dettagli Investimento
+              </h2>
 
-          <div className="flex justify-between gap-10">
-            <div className="w-full ">
-              <label
-                className="block text-sm/6 font-semibold text-gray-900"
-                for="datetime-investimento"
-              >
-                Data dell'investimento
-              </label>
-              <div className="mt-2">
+              <div className="space-y-2 relative">
+                <label className="text-gray-800 font-medium">
+                  Nome azienda *
+                </label>
+                {/* Sotto il campo Nome Azienda */}
+                {suggerimenti.length > 0 && (
+                  <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto mt-1">
+                    {suggerimenti.map((item) => (
+                      <li
+                        key={item.symbol}
+                        onClick={() => {
+                          setData((prev) => ({ ...prev, nome: item.symbol }));
+                          setSuggerimenti([]);
+                        }}
+                        className="px-4 py-2 hover:bg-indigo-100 cursor-pointer transition"
+                      >
+                        <strong>{item.symbol}</strong> —{" "}
+                        {item.shortname || item.name} ({item.exchange || "USA"})
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="nome"
+                    value={data.nome}
+                    onChange={handleChange}
+                    placeholder="Es. Apple, Google, ecc."
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleSearchName}
+                    className="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-indigo-600 transition-all shadow-sm"
+                  >
+                    🔍 Cerca
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-gray-800 font-medium">
+                  Data investimento *
+                </label>
                 <input
                   type="date"
                   name="date"
                   value={data.date}
                   onChange={handleChange}
-                  className="block border  w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-            </div>
 
-            <div className="w-full ">
-              <label
-                className="block text-sm/6 font-semibold text-gray-900"
-                for="datetime-investimento"
-              >
-                Ora dell'investimento
-              </label>
-              <div className="mt-2">
+              <div className="space-y-2">
+                <label className="text-gray-800 font-medium">
+                  Quantità di azioni *
+                </label>
                 <input
-                  type="time"
-                  name="ora"
-                  value={data.ora}
+                  type="number"
+                  name="quantita"
+                  value={data.quantita}
                   onChange={handleChange}
-                  className="block border  w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
+                  placeholder="Es. 10, 100, ecc."
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
-            </div>
-          </div>
-          <div className="relative">
-            <div className="flex justify-between items-center">
-              <label
-                htmlFor="Nome"
-                className="block text-sm/6 font-semibold text-gray-900"
-              >
-                Nome azienda *
-              </label>
-              <button
-                type="button"
-                onClick={handleSearchName}
-                className="bg-[#ffd600] text-black px-5 py-2 rounded-md font-semibold text-sm tracking-wide shadow-sm transition-all duration-200 hover:shadow-lg hover:-translate-y-[2px] hover:bg-yellow-400 active:translate-y-0 active:shadow-inner"
-              >
-                🔍 Cerca
-              </button>
-            </div>
 
-            <div className="mt-2">
-              <input
-                type="text"
-                name="nome"
-                value={data.nome}
-                onChange={handleChange}
-                className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-                placeholder="Es. Apple, Google, ecc."
-                required
-              />
-            </div>
-            {suggerimenti.length > 0 && (
-              <ul className="absolute z-10 w-full bg-white border border-gray-200 rounded-md mt-1 max-h-60 overflow-y-auto shadow-lg">
-                {suggerimenti.map((item) => (
-                  <li
-                    key={item.symbol}
-                    onClick={() => {
-                      setData((prev) => ({ ...prev, nome: item.symbol }));
-                      setSuggerimenti([]);
-                    }}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm"
+              <div className="space-y-2">
+                <label className="text-gray-800 font-medium">
+                  Prezzo per azione ($) *
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    name="Prezzo_Azione"
+                    value={data.Prezzo_Azione}
+                    onChange={handleChange}
+                    placeholder="Es. 125.50"
+                    className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                  <button
+                    type="button"
+                    onClick={handlePrezzoStorico}
+                    className="bg-indigo-500 text-white px-3 py-2 rounded-md hover:bg-indigo-600 transition-all shadow-sm text-sm"
                   >
-                    <strong>{item.symbol}</strong> —{" "}
-                    {item.shortname || item.name} ({item.exchange || "USA"})
-                  </li>
-                ))}
-              </ul>
-            )}
+                    ⚡️ Calcola
+                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-gray-800 font-medium">
+                  Totale investito ($) *
+                </label>
+                <input
+                  type="number"
+                  name="totale"
+                  value={data.totale}
+                  onChange={handleChange}
+                  placeholder="Calcolato automaticamente o modificabile."
+                  className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <button
+                  onClick={() =>
+                    setData({
+                      date: "",
+                      ora: "",
+                      nome: "",
+                      quantita: "",
+                      Prezzo_Azione: "",
+                      totale: "",
+                    })
+                  }
+                  className="w-full bg-gray-200 text-gray-800 py-2 rounded-md font-semibold hover:bg-gray-300 transition"
+                >
+                  Cancella
+                </button>
+                <button className="w-full bg-green-500 text-white py-2 rounded-md font-semibold hover:bg-green-600 transition">
+                  Salva Investimento
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Nuvoletta */}
+        <div className="absolute right-40 top-1/2 -translate-y-1/2 flex flex-col items-center space-y-4">
+          {/* Messaggio */}
+          <div className="relative bg-white p-6 rounded-xl shadow-2xl max-w-xs text-center font-medium border border-gray-100">
+            <p className="text-gray-700">{message}</p>
+
+            {/* Triangolino */}
+            <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-b border-r border-gray-100"></div>
           </div>
 
-          <label
-            htmlFor="quantita"
-            className="block text-sm/6 font-semibold text-gray-900"
-          >
-            Quantità di azioni: *
-          </label>
-          <input
-            type="number"
-            name="quantita"
-            value={data.quantita}
-            onChange={handleChange}
-            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-            placeholder="Es. 10, 100, ecc."
-            required
-          />
-
-          <div className="flex justify-between items-center">
-            <label
-              htmlFor="prezzo"
-              className="block text-sm/6 font-semibold text-gray-900"
-            >
-              Prezzo per azione *
-            </label>
-            <button
-              type="button"
-              onClick={handlePrezzoStorico}
-              className="bg-[#ffd600] text-[#333] px-[1rem] py-[0.4rem] border-none rounded-[6px] font-semibold text-[0.8rem] cursor-pointer transition-transform duration-200 ease-in-out hover:-translate-y-[2px] hover:shadow-[0_4px_15px_rgba(0,0,0,0.2)]"
-            >
-              Calcola automaticamente
-            </button>
+          {/* Avatar operatore */}
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-3xl shadow-lg hover:scale-105 transition-transform duration-300">
+            😊
           </div>
-          <input
-            type="number"
-            name="Prezzo_Azione"
-            value={data.Prezzo_Azione}
-            onChange={handleChange}
-            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-            placeholder="Es, 125.50"
-            required
-          />
+        </div>
 
-          <label
-            htmlFor="totale"
-            className="block text-sm/6 font-semibold text-gray-900"
-          >
-            Totale investito
-          </label>
-          <input
-            type="number"
-            name="totale"
-            value={data.totale}
-            onChange={handleChange}
-            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-            placeholder="Calcolato automaticamente o modificabile."
-            required
-          />
-
-          <div className="flex gap-2">
-            <button className="flex w-full justify-center rounded-md bg-red-500 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Annulla
-            </button>
-            <button className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Salva investimento
-            </button>
-          </div>
-        </form>
+        {/*Fine */}
       </div>
     </>
   );

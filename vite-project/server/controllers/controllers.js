@@ -119,60 +119,47 @@ export const yahooSuggerimenti = async (req, res) => {
 };
 
 export const yahooStorico = async (req, res) => {
-  const { nome, data, ora } = req.body;
+  const { nome, data } = req.body;
 
-  console.log("▶️ Dati ricevuti:", { nome, data, ora });
-
-  if (!nome || !data || !ora) {
-    return res.status(400).json({ error: "Dati mancanti" });
+  if (!nome || !data) {
+    return res.status(400).json({
+      message: "Dati mancanti",
+    });
   }
 
   const from = new Date(`${data}T00:00:00`);
   const to = new Date(`${data}T23:59:59`);
-  const targetMillis = new Date(`${data}T${ora}`).getTime();
+  const targetMillis = new Date(`${data}T23:59:59`).getTime();
 
   try {
     let result = await yahooFinance.chart(nome, {
       period1: from,
       period2: to,
-      interval: "5m",
+      interval: "1d",
     });
 
-    let prezzi = result?.indicators?.quote?.[0];
-    let timestamps = result?.timestamp;
+    if (result.quotes && result.quotes.length > 0) {
+      const storico = result.quotes.map((q) => ({
+        date: new Date(q.date),
+        open: q.open,
+        close: q.close,
+        high: q.high,
+        low: q.low,
+        volume: q.volume,
+      }));
 
-    if (!prezzi || !timestamps || timestamps.length === 0) {
-      console.log("⏳ Nessun dato con 5m. Provo con 1d...");
+      const piùVicino = storico.reduce((prev, curr) =>
+        Math.abs(curr.date.getTime() - targetMillis) <
+        Math.abs(prev.date.getTime() - targetMillis)
+          ? curr
+          : prev
+      );
 
-      result = await yahooFinance.chart(nome, {
-        period1: from,
-        period2: to,
-        interval: "1d",
+      return res.status(200).json({ ...piùVicino, intervallo: "1d" });
+    } else {
+      return res.status(404).json({
+        message: "Dati storici non disponibili (anche con intervallo 1d).",
       });
-
-      if (result.quotes && result.quotes.length > 0) {
-        const storico = result.quotes.map((q) => ({
-          date: new Date(q.date),
-          open: q.open,
-          close: q.close,
-          high: q.high,
-          low: q.low,
-          volume: q.volume,
-        }));
-
-        const piùVicino = storico.reduce((prev, curr) =>
-          Math.abs(curr.date.getTime() - targetMillis) <
-          Math.abs(prev.date.getTime() - targetMillis)
-            ? curr
-            : prev
-        );
-
-        return res.status(200).json({ ...piùVicino, intervallo: "1d" });
-      } else {
-        return res.status(404).json({
-          message: "Dati storici non disponibili (anche con intervallo 1d).",
-        });
-      }
     }
   } catch (error) {
     console.error("❌ Errore durante la richiesta storica:", error.message);
