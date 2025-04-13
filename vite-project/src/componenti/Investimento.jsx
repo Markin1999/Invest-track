@@ -3,22 +3,21 @@ import { Navbar } from "./Navbar";
 import axios from "axios";
 import { useUserContext } from "../contesti/useContext";
 import { useNavigate } from "react-router-dom";
+import Footer from "./footer";
 
 const VITE_PORT = import.meta.env.VITE_PORT;
 export function Investimento() {
   const { user, loading } = useUserContext();
 
   if (loading) {
-    return <p>🔄 Caricamento utente...</p>; // o uno spinner
+    return;
   }
 
   if (!user) {
-    return <p>🚫 Nessun utente loggato</p>;
+    return;
   }
 
   const userId = user.id;
-  console.log("🔍 USER DAL CONTEXT:", user);
-  console.log("🔍 ID UTENTE:", userId);
 
   const [data, setData] = useState({
     date: "",
@@ -35,6 +34,7 @@ export function Investimento() {
   );
 
   const [suggerimenti, setSuggerimenti] = useState([]);
+  const [button, setButton] = useState(false);
 
   const handleChange = async (e) => {
     const { name, value } = e.target;
@@ -94,22 +94,11 @@ export function Investimento() {
     }
   };
 
-  const saveForm = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        `http://localhost:${VITE_PORT}/saveForm/${userId}`,
-        { data }
-      );
-      console.log("✅ Dati salvati:", response.data);
-      setMessage("✅ Dati salvati con successo!");
-    } catch (error) {
-      console.error("Errore durante l'invio:", error);
-      setMessage("Controlla di aver inserito tutti i dati");
-    }
-  };
-
   const handleSearchName = async () => {
+    if (data.nome) {
+      setButton(true);
+    }
+
     try {
       const response = await axios.post(
         `http://localhost:${VITE_PORT}/searchNome`,
@@ -123,6 +112,36 @@ export function Investimento() {
       setSuggerimenti(risultati); // o gestisci come preferisci
     } catch (error) {
       console.error("Errore nella chiamata al backend:", error);
+    }
+  };
+
+  const saveForm = async (e) => {
+    e.preventDefault();
+    if (!button) {
+      setMessage(
+        "Non hai cliccato il bottone Cerca. I dati non sono stati caricati"
+      );
+      return;
+    }
+    try {
+      setButton(false);
+      const response = await axios.post(
+        `http://localhost:${VITE_PORT}/saveForm/${userId}`,
+        { data }
+      );
+      console.log("✅ Dati salvati:", response.data);
+      setMessage("✅ Dati salvati con successo!");
+      setData({
+        date: "",
+        ora: "",
+        nome: "",
+        quantita: "",
+        Prezzo_Azione: "",
+        totale: "",
+      });
+    } catch (error) {
+      console.error("Errore durante l'invio:", error);
+      setMessage("Controlla di aver inserito tutti i dati");
     }
   };
 
@@ -156,7 +175,7 @@ export function Investimento() {
       </header>
       <div className=" w-screen flex justify-between items-center gap-5 px-10">
         <div className="basis-0 grow flex justify-center">
-          <div className="max-w-[700px] w-full bg-white shadow-2xl rounded-xl p-8 border-t-[8px] border-[#ffd600] space-y-6">
+          <div className="  mt-[-6px] z-20 max-w-[700px] w-full bg-white shadow-2xl rounded-xl p-8 border-t-[8px] border-[#ffd600] space-y-6">
             <form onSubmit={saveForm} className="space-y-6">
               <h2 className="text-2xl font-bold text-center text-indigo-600">
                 📈 Dettagli Investimento
@@ -312,13 +331,14 @@ export function Investimento() {
           </div>
 
           {/* Avatar operatore */}
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-3xl shadow-lg hover:scale-105 transition-transform duration-300">
+          <div className=" cursor-pointer w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-3xl shadow-lg hover:scale-105 transition-transform duration-300">
             😊
           </div>
         </div>
 
         {/*Fine */}
       </div>
+      <Footer />
     </>
   );
 }

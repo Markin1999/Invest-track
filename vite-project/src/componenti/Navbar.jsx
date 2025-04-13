@@ -3,7 +3,14 @@ import { useUserContext } from "../contesti/useContext";
 import { useEffect } from "react";
 
 export function Navbar() {
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
+  if (loading) {
+    return <p>🔄 Caricamento utente...</p>;
+  }
+
+  if (!user) {
+    return <p>🚫 Nessun utente loggato</p>;
+  }
 
   return (
     <nav className="flex justify-between items-center bg-[#1a73e8] px-8 py-4 text-white">

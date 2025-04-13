@@ -10,7 +10,7 @@ import { Investimento } from "./componenti/Investimento";
 
 function App() {
   return (
-    <>
+    <div className="bg-[#f2f4f8]">
       <BrowserRouter>
         <UserProvider>
           <Routes>
@@ -21,7 +21,7 @@ function App() {
           </Routes>
         </UserProvider>
       </BrowserRouter>
-    </>
+    </div>
   );
 }
 
