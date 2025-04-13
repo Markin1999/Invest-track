@@ -223,14 +223,11 @@ export const saveForm = async (req, res) => {
       const nuovaQuantita = quantitaVecchia + quantitaNuova;
       const nuovoTotaleInvestito = totaleInvestitoVecchio + totaleNuovo;
 
-      // ✅ Prezzo medio corretto
       const nuovoPrezzoMedio = nuovoTotaleInvestito / nuovaQuantita;
 
-      // ✅ Yahoo price
       const quote = await yahooFinance.quote(data.nome);
       const prezzoGiornaliero = quote.regularMarketPrice;
 
-      // ✅ Guadagno e differenza
       const valoreAttuale = prezzoGiornaliero * nuovaQuantita;
       const guadagno = nuovaQuantita * prezzoGiornaliero - nuovoTotaleInvestito;
       const differenzaPercentuale =

@@ -84,7 +84,7 @@ export function Investimento() {
 
       const prezzo = response.data.close;
 
-      setData((prev) => ({ ...prev, Prezzo_Azione: prezzo.toFixed(2) })); // o gestisci come preferisci
+      setData((prev) => ({ ...prev, Prezzo_Azione: prezzo.toFixed(2) }));
     } catch (error) {
       console.error("Errore nella chiamata al backend:", error);
       setMessage(
@@ -103,13 +103,13 @@ export function Investimento() {
       const response = await axios.post(
         `http://localhost:${VITE_PORT}/searchNome`,
         {
-          nome: data.nome, // oppure qualunque sia il tuo input
+          nome: data.nome,
         }
       );
 
       const risultati = response.data.quotes || [];
 
-      setSuggerimenti(risultati); // o gestisci come preferisci
+      setSuggerimenti(risultati);
     } catch (error) {
       console.error("Errore nella chiamata al backend:", error);
     }
@@ -185,7 +185,7 @@ export function Investimento() {
                 <label className="text-gray-800 font-medium">
                   Nome azienda *
                 </label>
-                {/* Sotto il campo Nome Azienda */}
+
                 {suggerimenti.length > 0 && (
                   <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto mt-1">
                     {suggerimenti.map((item) => (
@@ -320,23 +320,17 @@ export function Investimento() {
           </div>
         </div>
 
-        {/* Nuvoletta */}
         <div className="absolute right-40 top-1/2 -translate-y-1/2 flex flex-col items-center space-y-4">
-          {/* Messaggio */}
           <div className="relative bg-white p-6 rounded-xl shadow-2xl max-w-xs text-center font-medium border border-gray-100">
             <p className="text-gray-700">{message}</p>
 
-            {/* Triangolino */}
             <div className="absolute left-1/2 -bottom-2 -translate-x-1/2 w-4 h-4 bg-white rotate-45 border-b border-r border-gray-100"></div>
           </div>
 
-          {/* Avatar operatore */}
           <div className=" cursor-pointer w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-indigo-500 flex items-center justify-center text-3xl shadow-lg hover:scale-105 transition-transform duration-300">
             😊
           </div>
         </div>
-
-        {/*Fine */}
       </div>
       <Footer />
     </>
