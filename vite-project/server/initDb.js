@@ -18,15 +18,28 @@ const setup = async () => {
         token TEXT 
       );
 
-
 CREATE TABLE IF NOT EXISTS investments (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   date DATE NOT NULL,
   nome TEXT NOT NULL,
-  quantita INTEGER NOT NULL,
-  Prezzo_Azione REAL NOT NULL,
-  totale REAL NOT NULL
+  quantita NUMERIC NOT NULL,
+  Prezzo_Azione NUMERIC NOT NULL,
+  totale NUMERIC NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS totalInvestment (
+id SERIAL PRIMARY KEY,
+user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+nome TEXT NOT NULL,
+quantita_totale NUMERIC NOT NULL,
+prezzoMedio NUMERIC NOT NULL,
+totaleInvestito NUMERIC NOT NULL,
+prezzoGiornaliero NUMERIC NOT NULL,
+differenzaPercentuale NUMERIC NOT NULL,
+guadagno NUMERIC NOT NULL,
+contatore INTEGER NOT NULL
 );
 
     `);

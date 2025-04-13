@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import yahooFinance from "yahoo-finance2";
 
+yahooFinance.suppressNotices(["yahooSurvey"]);
+
 dotenv.config();
 const { SECRET = "" } = process.env;
 
@@ -178,6 +180,86 @@ export const saveForm = async (req, res) => {
   }
 
   try {
+    const result = await db.oneOrNone(
+      `SELECT * FROM totalInvestment WHERE user_id = $1 AND nome = $2`,
+      [user, data.nome]
+    );
+
+    if (!result) {
+      const quote = await yahooFinance.quote(data.nome);
+      const prezzoGiornaliero = quote.regularMarketPrice;
+      const guadagno =
+        ((prezzoGiornaliero * data.quantita) / data.totale) * 100;
+      const contatore = 1;
+
+      const differenzaPercentuale =
+        ((prezzoGiornaliero - data.Prezzo_Azione) / data.Prezzo_Azione) * 100;
+
+      await db.one(
+        `INSERT INTO totalInvestment (user_id, nome, quantita_totale, prezzoMedio, totaleInvestito, prezzoGiornaliero, differenzaPercentuale, guadagno, contatore) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
+        [
+          user,
+          data.nome,
+          data.quantita,
+          data.Prezzo_Azione,
+          data.totale,
+          prezzoGiornaliero,
+          differenzaPercentuale,
+          guadagno,
+          contatore,
+        ]
+      );
+    } else {
+      console.log(result);
+      const quantitaVecchia = parseFloat(result.quantita_totale);
+      const prezzoMedioVecchio = parseFloat(result.prezzomedio);
+      const totaleInvestitoVecchio = parseFloat(result.totaleinvestito);
+      const contatore = parseInt(result.contatore);
+
+      const quantitaNuova = parseFloat(data.quantita);
+      const prezzoNuovo = parseFloat(data.Prezzo_Azione);
+      const totaleNuovo = parseFloat(data.totale);
+
+      const nuovaQuantita = quantitaVecchia + quantitaNuova;
+      const nuovoTotaleInvestito = totaleInvestitoVecchio + totaleNuovo;
+
+      // ✅ Prezzo medio corretto
+      const nuovoPrezzoMedio = nuovoTotaleInvestito / nuovaQuantita;
+
+      // ✅ Yahoo price
+      const quote = await yahooFinance.quote(data.nome);
+      const prezzoGiornaliero = quote.regularMarketPrice;
+
+      // ✅ Guadagno e differenza
+      const valoreAttuale = prezzoGiornaliero * nuovaQuantita;
+      const guadagno = nuovaQuantita * prezzoGiornaliero - nuovoTotaleInvestito;
+      const differenzaPercentuale =
+        ((valoreAttuale - nuovoTotaleInvestito) / nuovoTotaleInvestito) * 100;
+
+      await db.none(
+        `UPDATE totalInvestment SET 
+             quantita_totale = $1,
+             prezzoMedio = $2,
+             totaleInvestito = $3,
+             prezzoGiornaliero = $4,
+             differenzaPercentuale = $5,
+             guadagno = $6,
+             contatore = $7
+           WHERE user_id = $8 AND nome = $9`,
+        [
+          nuovaQuantita,
+          nuovoPrezzoMedio,
+          nuovoTotaleInvestito,
+          prezzoGiornaliero,
+          differenzaPercentuale,
+          guadagno,
+          contatore + 1,
+          user,
+          data.nome,
+        ]
+      );
+    }
+
     await db.one(
       `INSERT INTO investments (user_id, date, nome, quantita, Prezzo_Azione, totale )VALUES ($1, $2, $3, $4, $5, $6) RETURNING id `,
       [
