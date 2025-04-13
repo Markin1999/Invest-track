@@ -280,3 +280,22 @@ export const saveForm = async (req, res) => {
       .json({ error: error.message || "Errore nel caricamento" });
   }
 };
+
+export const getInvestimento = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const userLogged = await db.any(
+      `SELECT * FROM totalInvestment WHERE user_id = $1 `,
+      [userId]
+    );
+
+    if (userLogged) {
+      return res.status(200).json(userLogged);
+    }
+
+    return res.status(404).json({ message: "Dati non trovati" });
+  } catch (error) {
+    res.status(500).json({ message: "errore nella richiesta", error });
+  }
+};

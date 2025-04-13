@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import cors from "cors";
 import {
+  getInvestimento,
   getUser,
   login,
   registrazione,
@@ -27,6 +28,7 @@ app.post("/login", login);
 app.post("/searchNome", yahooSuggerimenti);
 app.post("/storico", yahooStorico);
 app.post("/saveForm/:user", saveForm);
+app.get("/invest/:id", getInvestimento);
 
 app.get("/user", passport.authenticate("jwt", { session: false }), getUser);
 

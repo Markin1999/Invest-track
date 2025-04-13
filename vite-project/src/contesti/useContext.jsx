@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const VITE_PORT = import.meta.env.VITE_PORT;
 
@@ -7,7 +8,24 @@ export const useUserContext = () => useContext(userContext);
 
 export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [investimenti, setInvestimenti] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const takeInvestimento = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:${VITE_PORT}/invest/${userId}`
+      );
+
+      setInvestimenti(response.data);
+    } catch (error) {
+      console.error("Errore nel recupero degli investimenti:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserLogged();
+  }, []);
 
   const fetchUserLogged = async () => {
     const token = sessionStorage.getItem("token");
@@ -26,8 +44,6 @@ export function UserProvider({ children }) {
         },
       });
 
-      console.log("📡 Risposta /user:", response.status);
-
       if (!response.ok) {
         const errorText = await response.text();
         console.error("Errore nella risposta:", errorText);
@@ -35,8 +51,8 @@ export function UserProvider({ children }) {
       }
 
       const userData = await response.json();
-      console.log("✅ Utente caricato:", userData);
       setUser(userData);
+      takeInvestimento(userData.id);
     } catch (error) {
       console.error("Errore fetchUserLogged:", error.message);
     } finally {
@@ -44,12 +60,10 @@ export function UserProvider({ children }) {
     }
   };
 
-  useEffect(() => {
-    fetchUserLogged();
-  }, []);
-
   return (
-    <userContext.Provider value={{ user, loading, fetchUserLogged }}>
+    <userContext.Provider
+      value={{ user, investimenti, loading, fetchUserLogged }}
+    >
       {children}
     </userContext.Provider>
   );
