@@ -89,7 +89,7 @@ export const getUser = async (req, res) => {
     const userId = req.user.id;
 
     const userLogged = await db.oneOrNone(
-      `SELECT nome, cognome FROM users WHERE id = $1 `,
+      `SELECT id, nome, cognome FROM users WHERE id = $1 `,
       [userId]
     );
 
@@ -166,5 +166,38 @@ export const yahooStorico = async (req, res) => {
     return res
       .status(500)
       .json({ error: error.message || "Errore storico Yahoo" });
+  }
+};
+
+export const saveForm = async (req, res) => {
+  const { user } = req.params;
+  const { data } = req.body;
+
+  if (!user || !data) {
+    return res.status(400).json({ message: "Dati mancanti" });
+  }
+
+  try {
+    await db.one(
+      `INSERT INTO investments (user_id, date, nome, quantita, Prezzo_Azione, totale )VALUES ($1, $2, $3, $4, $5, $6) RETURNING id `,
+      [
+        user,
+        data.date,
+        data.nome,
+        data.quantita,
+        data.Prezzo_Azione,
+        data.totale,
+      ]
+    );
+
+    res.status(200).json({ message: "Dati inseriti con successo" });
+  } catch (error) {
+    console.error(
+      "❌ Attenzione riprova, i dati non sono stati caricati",
+      error.message
+    );
+    return res
+      .status(500)
+      .json({ error: error.message || "Errore nel caricamento" });
   }
 };

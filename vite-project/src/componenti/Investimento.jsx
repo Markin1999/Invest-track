@@ -2,18 +2,33 @@ import { useEffect, useState } from "react";
 import { Navbar } from "./Navbar";
 import axios from "axios";
 import { useUserContext } from "../contesti/useContext";
+import { useNavigate } from "react-router-dom";
+
 const VITE_PORT = import.meta.env.VITE_PORT;
 export function Investimento() {
-  const { user } = useUserContext();
+  const { user, loading } = useUserContext();
+
+  if (loading) {
+    return <p>🔄 Caricamento utente...</p>; // o uno spinner
+  }
+
+  if (!user) {
+    return <p>🚫 Nessun utente loggato</p>;
+  }
+
+  const userId = user.id;
+  console.log("🔍 USER DAL CONTEXT:", user);
+  console.log("🔍 ID UTENTE:", userId);
 
   const [data, setData] = useState({
     date: "",
-    ora: "",
     nome: "",
     quantita: "",
     Prezzo_Azione: "",
     totale: "",
   });
+
+  const navTo = useNavigate();
 
   const [message, setMessage] = useState(
     `Ehi ciao ${user.nome}! Mi raccomando: compila tutti i campi, cerca il nome corretto dell'azienda, inserisci data e ora per calcolare con precisione il valore del tuo investimento.`
@@ -79,6 +94,21 @@ export function Investimento() {
     }
   };
 
+  const saveForm = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        `http://localhost:${VITE_PORT}/saveForm/${userId}`,
+        { data }
+      );
+      console.log("✅ Dati salvati:", response.data);
+      setMessage("✅ Dati salvati con successo!");
+    } catch (error) {
+      console.error("Errore durante l'invio:", error);
+      setMessage("Controlla di aver inserito tutti i dati");
+    }
+  };
+
   const handleSearchName = async () => {
     try {
       const response = await axios.post(
@@ -127,7 +157,7 @@ export function Investimento() {
       <div className=" w-screen flex justify-between items-center gap-5 px-10">
         <div className="basis-0 grow flex justify-center">
           <div className="max-w-[700px] w-full bg-white shadow-2xl rounded-xl p-8 border-t-[8px] border-[#ffd600] space-y-6">
-            <form className="space-y-6">
+            <form onSubmit={saveForm} className="space-y-6">
               <h2 className="text-2xl font-bold text-center text-indigo-600">
                 📈 Dettagli Investimento
               </h2>
@@ -162,6 +192,7 @@ export function Investimento() {
                     value={data.nome}
                     onChange={handleChange}
                     placeholder="Es. Apple, Google, ecc."
+                    required
                     className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <button
@@ -183,6 +214,7 @@ export function Investimento() {
                   name="date"
                   value={data.date}
                   onChange={handleChange}
+                  required
                   className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
@@ -197,6 +229,7 @@ export function Investimento() {
                   value={data.quantita}
                   onChange={handleChange}
                   placeholder="Es. 10, 100, ecc."
+                  required
                   className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
@@ -212,6 +245,7 @@ export function Investimento() {
                     value={data.Prezzo_Azione}
                     onChange={handleChange}
                     placeholder="Es. 125.50"
+                    required
                     className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   />
                   <button
@@ -233,14 +267,16 @@ export function Investimento() {
                   name="totale"
                   value={data.totale}
                   onChange={handleChange}
-                  placeholder="Calcolato automaticamente o modificabile."
+                  required
                   className="w-full border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
               </div>
 
               <div className="flex gap-4 pt-4">
                 <button
-                  onClick={() =>
+                  type="button"
+                  onClick={() => {
+                    navTo("/totalpage");
                     setData({
                       date: "",
                       ora: "",
@@ -248,13 +284,16 @@ export function Investimento() {
                       quantita: "",
                       Prezzo_Azione: "",
                       totale: "",
-                    })
-                  }
+                    });
+                  }}
                   className="w-full bg-gray-200 text-gray-800 py-2 rounded-md font-semibold hover:bg-gray-300 transition"
                 >
-                  Cancella
+                  Annulla
                 </button>
-                <button className="w-full bg-green-500 text-white py-2 rounded-md font-semibold hover:bg-green-600 transition">
+                <button
+                  type="submit"
+                  className="w-full bg-green-500 text-white py-2 rounded-md font-semibold hover:bg-green-600 transition"
+                >
                   Salva Investimento
                 </button>
               </div>

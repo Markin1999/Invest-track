@@ -18,16 +18,17 @@ const setup = async () => {
         token TEXT 
       );
 
-      -- Tabella Investimenti
-      CREATE TABLE IF NOT EXISTS investments (
-      id SERIAL PRIMARY KEY,
-      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-      company TEXT NOT NULL,
-      invested_amount NUMERIC(12,2) NOT NULL,
-      quantity INTEGER NOT NULL,
-      average_price NUMERIC(12,2),
-      created_at TIMESTAMP DEFAULT NOW()
-      )
+
+CREATE TABLE IF NOT EXISTS investments (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  date DATE NOT NULL,
+  nome TEXT NOT NULL,
+  quantita INTEGER NOT NULL,
+  Prezzo_Azione REAL NOT NULL,
+  totale REAL NOT NULL
+);
+
     `);
 
     console.log("Tabelle create correttamente");

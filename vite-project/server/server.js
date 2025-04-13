@@ -4,6 +4,7 @@ import {
   getUser,
   login,
   registrazione,
+  saveForm,
   yahooStorico,
   yahooSuggerimenti,
 } from "./controllers/controllers.js";
@@ -25,6 +26,7 @@ app.post("/registrazione", registrazione);
 app.post("/login", login);
 app.post("/searchNome", yahooSuggerimenti);
 app.post("/storico", yahooStorico);
+app.post("/saveForm/:user", saveForm);
 
 app.get("/user", passport.authenticate("jwt", { session: false }), getUser);
 
