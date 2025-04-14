@@ -29,7 +29,6 @@ export function UserProvider({ children }) {
 
   const fetchUserLogged = async () => {
     const token = sessionStorage.getItem("token");
-    console.log("📦 TOKEN trovato:", token);
 
     if (!token) {
       setLoading(false);
@@ -62,7 +61,7 @@ export function UserProvider({ children }) {
 
   return (
     <userContext.Provider
-      value={{ user, investimenti, loading, fetchUserLogged }}
+      value={{ user, investimenti, takeInvestimento, loading, fetchUserLogged }}
     >
       {children}
     </userContext.Provider>

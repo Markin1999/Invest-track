@@ -188,8 +188,7 @@ export const saveForm = async (req, res) => {
     if (!result) {
       const quote = await yahooFinance.quote(data.nome);
       const prezzoGiornaliero = quote.regularMarketPrice;
-      const guadagno =
-        ((prezzoGiornaliero * data.quantita) / data.totale) * 100;
+      const guadagno = (prezzoGiornaliero - data.Prezzo_Azione) * data.quantita;
       const contatore = 1;
 
       const differenzaPercentuale =
