@@ -315,3 +315,77 @@ export const SezioneInvestimenti = async (req, res) => {
     res.status(500).json({ message: "errore nella richiesta", error });
   }
 };
+
+export const deleteFunction = async (req, res) => {
+  const userId = req.params.id;
+  const { element, users } = req.body;
+
+  try {
+    const selectAll = await db.any(
+      `SELECT * FROM totalinvestment WHERE nome = $1 AND user_id = $2`,
+      [element.nome, users]
+    );
+
+    if (!selectAll.length) {
+      console.log("⚠️ Nessun investimento trovato");
+      return res.status(404).json({ message: "Nessun investimento trovato" });
+    }
+
+    const selectAllSum = selectAll[0];
+
+    await db.none(`DELETE FROM investments WHERE id = $1 AND user_id = $2`, [
+      userId,
+      users,
+    ]);
+
+    const nuovaQuantita = selectAllSum.quantita_totale - element.quantita;
+
+    if (nuovaQuantita > 0) {
+      const nuovoTotaleInvestito =
+        selectAllSum.totaleinvestito - element.totale;
+      const contatore = selectAllSum.contatore - 1;
+
+      const quote = await yahooFinance.quote(element.nome);
+      const prezzoGiornaliero = quote.regularMarketPrice;
+
+      const valoreAttuale = prezzoGiornaliero * nuovaQuantita;
+      const nuovoPrezzoMedio = nuovoTotaleInvestito / nuovaQuantita;
+      const guadagno = valoreAttuale - nuovoTotaleInvestito;
+      const differenzaPercentuale =
+        ((valoreAttuale - nuovoTotaleInvestito) / nuovoTotaleInvestito) * 100;
+
+      await db.none(
+        `UPDATE totalinvestment SET 
+           quantita_totale = $1,
+           prezzomedio = $2,
+           totaleinvestito = $3,
+           prezzogiornaliero = $4,
+           differenzapercentuale = $5,
+           guadagno = $6,
+           contatore = $7
+         WHERE user_id = $8 AND nome = $9`,
+        [
+          nuovaQuantita,
+          nuovoPrezzoMedio,
+          nuovoTotaleInvestito,
+          prezzoGiornaliero,
+          differenzaPercentuale,
+          guadagno,
+          contatore,
+          users,
+          element.nome,
+        ]
+      );
+    } else {
+      await db.none(
+        `DELETE FROM totalinvestment WHERE nome = $1 AND user_id = $2`,
+        [element.nome, users]
+      );
+    }
+
+    res.status(200).json({ message: "Elemento eliminato con successo" });
+  } catch (error) {
+    console.error(" Errore nell'eliminazione:", error);
+    res.status(500).json({ message: "errore nell'eliminazione'", error });
+  }
+};

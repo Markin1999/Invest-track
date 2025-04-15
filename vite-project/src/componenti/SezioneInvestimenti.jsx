@@ -2,21 +2,48 @@ import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../contesti/useContext";
 import { Navbar } from "./Navbar";
 import Footer from "./footer";
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
+
+const VITE_PORT = import.meta.env.VITE_PORT;
 
 export function SezioneInvestimenti() {
   const { sezioneI, user, loading } = useUserContext();
+  const [datiConDataPulita, setDatiConDataPulita] = useState([]);
 
-  const navTo = useNavigate();
+  useEffect(() => {
+    setDatiConDataPulita(
+      sezioneI.map((element) => ({
+        ...element,
+        date: element.date
+          ? element.date.split("T")[0]
+          : "Data non disponibile",
+      }))
+    );
+  }, [sezioneI]);
 
-  if (!user) {
-    navTo("/");
-  }
+  const handleDelete = async (index) => {
+    const element = sezioneI.find((element) => element.id == index);
 
-  const datiConDataPulita = sezioneI.map((element) => ({
-    ...element,
-    date: element.date ? element.date.split("T")[0] : "Data non disponibile",
-  }));
+    if (!sezioneI || !user || !element) return;
+
+    try {
+      const response = await axios.patch(
+        `http://localhost:${VITE_PORT}/delete/${index}`,
+        {
+          element,
+          users: user.id,
+        }
+      );
+
+      console.log("Elemento eliminato con successo:", response.data);
+      setDatiConDataPulita((prev) =>
+        prev.filter((element) => element.id !== index)
+      );
+    } catch (error) {
+      console.error("Errore", error);
+    }
+  };
 
   return (
     <>
@@ -76,7 +103,10 @@ export function SezioneInvestimenti() {
                 <button className="inline-block px-3 py-1.5 mr-2 rounded text-[0.9rem] transition duration-200 bg-[#f0f0f0] text-[#333] hover:bg-[#e0e0e0] hover:-translate-y-[1px]">
                   Modifica
                 </button>
-                <button className="inline-block px-3 py-1.5 rounded text-[0.9rem] transition duration-200 bg-red-500 text-white hover:bg-red-400 hover:-translate-y-[1px]">
+                <button
+                  onClick={() => handleDelete(x.id)}
+                  className="inline-block px-3 py-1.5 rounded text-[0.9rem] transition duration-200 bg-red-500 text-white hover:bg-red-400 hover:-translate-y-[1px]"
+                >
                   Elimina
                 </button>
               </div>
