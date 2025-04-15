@@ -59,7 +59,7 @@ export function SommaInvestimenti({ investimenti }) {
                   <i className="fas fa-edit"></i> Modifica
                 </button>
                 <button className="bg-[#f0f0f0] text-[#333] transition-transform duration-200 ease-in-out border-none py-[0.5rem] px-[1rem] cursor-pointer text-[0.9rem] hover:bg-[#e0e0e0] hover:translate-y-[-1px]">
-                  <i class="fas fa-comment"></i> Note
+                  <i className="fas fa-comment"></i> Note
                 </button>
               </div>
             </div>

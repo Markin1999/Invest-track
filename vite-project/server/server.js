@@ -6,6 +6,7 @@ import {
   login,
   registrazione,
   saveForm,
+  SezioneInvestimenti,
   yahooStorico,
   yahooSuggerimenti,
 } from "./controllers/controllers.js";
@@ -29,6 +30,7 @@ app.post("/searchNome", yahooSuggerimenti);
 app.post("/storico", yahooStorico);
 app.post("/saveForm/:user", saveForm);
 app.get("/invest/:id", getInvestimento);
+app.get("/sezioneI/:id", SezioneInvestimenti);
 
 app.get("/user", passport.authenticate("jwt", { session: false }), getUser);
 

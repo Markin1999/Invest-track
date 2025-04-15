@@ -4,11 +4,7 @@ import { SommaInvestimenti } from "./SommaInvestimenti";
 import { SituazioneAttuale } from "./SituazioneAttuale";
 
 export function Main() {
-  const { investimenti, takeinvestimento } = useUserContext();
-
-  useEffect(() => {
-    takeinvestimento;
-  }, []);
+  const { investimenti } = useUserContext();
 
   return (
     <>

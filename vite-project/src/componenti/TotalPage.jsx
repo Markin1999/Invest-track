@@ -1,15 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import { useUserContext } from "../contesti/useContext";
 import { Header } from "./Header";
 import { Main } from "./Main";
 import { Navbar } from "./Navbar";
-import { SommaInvestimenti } from "./SommaInvestimenti";
 import Footer from "./footer";
 
 export function TotalPage() {
-  const { loading } = useUserContext();
+  const { user, investimenti } = useUserContext();
 
+  const navTo = useNavigate();
+
+  if (!user || !investimenti) {
+    navTo("/");
+  }
   return (
-    <div className="m-0 p-0">
+    <div>
       <Navbar />
       <Header />
       <Main />

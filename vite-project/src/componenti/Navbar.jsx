@@ -3,7 +3,12 @@ import { useUserContext } from "../contesti/useContext";
 import { useEffect } from "react";
 
 export function Navbar() {
-  const { user, loading } = useUserContext();
+  const { user, loading, fetchUserLogged } = useUserContext();
+
+  useEffect(() => {
+    fetchUserLogged;
+  }, []);
+
   if (loading) {
     return <p>🔄 Caricamento utente...</p>;
   }
@@ -23,7 +28,7 @@ export function Navbar() {
             {" "}
             <a
               className=" text-white font-medium transition-colors duration-200 ease-in-out hover:text-[#cce2ff]"
-              href=""
+              href="/totalpage"
             >
               Home
             </a>
@@ -31,7 +36,7 @@ export function Navbar() {
           <li>
             <a
               className=" text-white font-medium transition-colors duration-200 ease-in-out hover:text-[#cce2ff]"
-              href=""
+              href="/sezioneInvestimenti"
             >
               Investimenti
             </a>

@@ -298,3 +298,20 @@ export const getInvestimento = async (req, res) => {
     res.status(500).json({ message: "errore nella richiesta", error });
   }
 };
+
+export const SezioneInvestimenti = async (req, res) => {
+  const userId = req.params.id;
+  try {
+    const investment = await db.any(
+      `SELECT * FROM investments WHERE user_id=$1`,
+      [userId]
+    );
+
+    if (investment) {
+      return res.status(200).json(investment);
+    }
+    return res.status(404).json({ message: "Dati non trovati" });
+  } catch (error) {
+    res.status(500).json({ message: "errore nella richiesta", error });
+  }
+};

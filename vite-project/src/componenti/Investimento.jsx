@@ -149,7 +149,7 @@ export function Investimento() {
     <>
       <Navbar />
 
-      <header className="relative bg-[linear-gradient(135deg,_#1a73e8,_#3eaaf7)] px-4 pt-8 pb-16 text-white overflow-hidden">
+      <header className="relative mt-16 bg-[linear-gradient(135deg,_#1a73e8,_#3eaaf7)] px-4 pt-8 pb-16 text-white overflow-hidden">
         <div className="max-w-[1200px] m-auto relative z-20 text-center">
           <h2 className="items-center text-[2rem] mb-4 font-semibold">
             Investi nel tuo futuro

@@ -10,6 +10,19 @@ export function UserProvider({ children }) {
   const [user, setUser] = useState(null);
   const [investimenti, setInvestimenti] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sezioneI, setSezioneI] = useState([]);
+
+  const takeSezioneI = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:${VITE_PORT}/sezioneI/${userId}`
+      );
+
+      setSezioneI(response.data);
+    } catch (error) {
+      console.error("Errore nel recupero degli investimenti:", error);
+    }
+  };
 
   const takeInvestimento = async (userId) => {
     try {
@@ -52,6 +65,7 @@ export function UserProvider({ children }) {
       const userData = await response.json();
       setUser(userData);
       takeInvestimento(userData.id);
+      takeSezioneI(userData.id);
     } catch (error) {
       console.error("Errore fetchUserLogged:", error.message);
     } finally {
@@ -61,7 +75,14 @@ export function UserProvider({ children }) {
 
   return (
     <userContext.Provider
-      value={{ user, investimenti, takeInvestimento, loading, fetchUserLogged }}
+      value={{
+        user,
+        investimenti,
+        sezioneI,
+        takeInvestimento,
+        loading,
+        fetchUserLogged,
+      }}
     >
       {children}
     </userContext.Provider>
