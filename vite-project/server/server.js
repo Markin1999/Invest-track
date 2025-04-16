@@ -1,6 +1,7 @@
 import express, { json } from "express";
 import cors from "cors";
 import {
+  caricaNomeNote,
   deleteFunction,
   getInvestimento,
   getUser,
@@ -33,6 +34,7 @@ app.post("/saveForm/:user", saveForm);
 app.get("/invest/:id", getInvestimento);
 app.get("/sezioneI/:id", SezioneInvestimenti);
 app.patch("/delete/:id", deleteFunction);
+app.post("/takenome/:id", caricaNomeNote);
 
 app.get("/user", passport.authenticate("jwt", { session: false }), getUser);
 

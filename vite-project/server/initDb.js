@@ -42,6 +42,15 @@ guadagno NUMERIC NOT NULL,
 contatore INTEGER NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS notes (
+id SERIAL PRIMARY KEY,
+user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+invest_id INTEGER NOT NULL REFERENCES totalinvestment(id) ON DELETE CASCADE,
+title TEXT NOT NULL,
+contenuto TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+
     `);
 
     console.log("Tabelle create correttamente");

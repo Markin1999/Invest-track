@@ -1,11 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "../contesti/useContext";
 
 const p = "mb-1 text-[#555] font-normal ";
 
 const div = "grid gap-6 grid-flow-col auto-cols-[400px] mx-4 py-4 ";
 
-export function SommaInvestimenti({ investimenti }) {
+export function SommaInvestimenti({ investimenti, setTakeNota }) {
+  const saveNote = (index) => {
+    setTakeNota({ set: true, index: index });
+  };
+
   return (
     <section>
       <h2 className="text-center text-[1.6rem] my-[2rem] font-semibold text-[#333]">
@@ -53,12 +57,12 @@ export function SommaInvestimenti({ investimenti }) {
                 <strong>Totale Importo:</strong> ${" "}
                 {(Number(x.totaleinvestito) + Number(x.guadagno)).toFixed(2)}
               </p>
-
               <div className="mt-[1rem] flex gap-[0.5rem] ">
-                <button className="bg-[#f0f0f0] text-[#333] transition-transform duration-200 ease-in-out border-none py-[0.5rem] px-[1rem] cursor-pointer text-[0.9rem] hover:bg-[#e0e0e0] hover:translate-y-[-1px] ">
-                  <i className="fas fa-edit"></i> Modifica
-                </button>
-                <button className="bg-[#f0f0f0] text-[#333] transition-transform duration-200 ease-in-out border-none py-[0.5rem] px-[1rem] cursor-pointer text-[0.9rem] hover:bg-[#e0e0e0] hover:translate-y-[-1px]">
+                <button
+                  type="button"
+                  onClick={() => saveNote(x.id)}
+                  className="bg-[#f0f0f0] text-[#333] transition-transform duration-200 ease-in-out border-none py-[0.5rem] px-[1rem] cursor-pointer text-[0.9rem] hover:bg-[#e0e0e0] hover:translate-y-[-1px]"
+                >
                   <i className="fas fa-comment"></i> Note
                 </button>
               </div>

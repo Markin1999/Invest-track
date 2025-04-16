@@ -270,10 +270,7 @@ export const saveForm = async (req, res) => {
 
     res.status(200).json({ message: "Dati inseriti con successo" });
   } catch (error) {
-    console.error(
-      "❌ Attenzione riprova, i dati non sono stati caricati",
-      error.message
-    );
+    console.error("Riprova, i dati non sono stati caricati", error.message);
     return res
       .status(500)
       .json({ error: error.message || "Errore nel caricamento" });
@@ -387,5 +384,23 @@ export const deleteFunction = async (req, res) => {
   } catch (error) {
     console.error(" Errore nell'eliminazione:", error);
     res.status(500).json({ message: "errore nell'eliminazione'", error });
+  }
+};
+
+export const caricaNomeNote = async (req, res) => {
+  const id_Inv = req.body.index;
+  const users_id = req.params.id;
+  try {
+    const response = await db.one(
+      `SELECT * FROM totalinvestment WHERE id = $1 AND user_id=$2`,
+      [id_Inv, users_id]
+    );
+
+    return res.status(200).json(response.nome);
+  } catch (error) {
+    console.error(" Errore nel caricamento del nome", error);
+    res
+      .status(500)
+      .json({ message: "errore nel caricamento del nome'", error });
   }
 };
