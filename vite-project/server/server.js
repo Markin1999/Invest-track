@@ -7,8 +7,10 @@ import {
   getUser,
   login,
   registrazione,
+  salvaNote,
   saveForm,
   SezioneInvestimenti,
+  takeAllNotes,
   yahooStorico,
   yahooSuggerimenti,
 } from "./controllers/controllers.js";
@@ -35,6 +37,8 @@ app.get("/invest/:id", getInvestimento);
 app.get("/sezioneI/:id", SezioneInvestimenti);
 app.patch("/delete/:id", deleteFunction);
 app.post("/takenome/:id", caricaNomeNote);
+app.post("/aggiungiNota/:id", salvaNote);
+app.get("/allnotes/:id", takeAllNotes);
 
 app.get("/user", passport.authenticate("jwt", { session: false }), getUser);
 

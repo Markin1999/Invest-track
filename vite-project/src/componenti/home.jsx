@@ -56,49 +56,54 @@ export function Home() {
 
   return (
     <>
-      <div className="flex w-full items-center justify-between h-screen bg-gray-100 px-2 ">
-        <div className="rounded-lg w-full m-16">
-          <h1 className="text-green-600 text-6xl mb-4 font-semibold">
-            INVE$T-TRACK
-          </h1>
-          <h3 className="text-[1.5rem] text-gray-700 font-medium">
-            Controlla in ogni momento i tuoi investimenti e le news a riguardo!
-          </h3>
-        </div>
+      <div className="flex w-full items-center justify-center h-screen bg-[#1a73e8] px-2 ">
         <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-sm m-16 gap-2">
-          <form className="flex flex-col space-y-4" onSubmit={handleLogin}>
-            <label htmlFor="">E-mail:</label>
+          <h1 className="text-[#1a73e8] mb-6 text-[2em] w-full text-center justify-center font-semibold">
+            Invest-Track
+          </h1>
+          <form
+            className="flex flex-col space-y-4 gap-2"
+            onSubmit={handleLogin}
+          >
+            <label htmlFor="" className="font-semibold">
+              E-mail:
+            </label>
             <input
               type="text"
               name="email"
               value={login.email}
               onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              placeholder="Inserisci la tua email"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2"
             />
-            <label htmlFor="">Password:</label>
+            <label htmlFor="" className="font-semibold">
+              Password:
+            </label>
             <input
-              type="text"
+              type="password"
               name="password"
               value={login.password}
+              placeholder="Inserisci la tua password"
               onChange={handleChange}
-              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2"
             />
             <button
               type="submit"
-              className="bg-green-600 text-white py-2 rounded-md font-semibold hover:bg-green-700 w-fit mx-auto px-6"
+              className="w-full bg-[#ffd600] text-[#111] rounded-2xl py-2 mt-6 font-semibold mx-auto px-6"
             >
               Accedi
             </button>
           </form>
-          <hr className="my-2" />
+
           {message && <p className="m-1 text-center">{message}</p>}
           {message && <hr className="my-2" />}
-          <div className="m-1 text-center">
+          <div className="m-1 w-full items-center flex justify-center gap-1 mt-4 text-[0.9rem]">
+            <p>Non hai un Account?</p>
             <Link
               to="/registrazione"
-              className="inline-block text-green-600 hover:underline"
+              className="inline-block text-[#1a73e8] hover:underline text-[0.9rem]"
             >
-              Crea nuovo account!
+              Registrati
             </Link>
           </div>
         </div>

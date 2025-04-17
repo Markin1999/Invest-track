@@ -11,6 +11,7 @@ export function UserProvider({ children }) {
   const [investimenti, setInvestimenti] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sezioneI, setSezioneI] = useState([]);
+  const [allNotes, setAllNotes] = useState([]);
 
   const takeSezioneI = async (userId) => {
     try {
@@ -21,6 +22,19 @@ export function UserProvider({ children }) {
       setSezioneI(response.data);
     } catch (error) {
       console.error("Errore nel recupero degli investimenti:", error);
+    }
+  };
+
+  const takeAllNotes = async (userId) => {
+    try {
+      const response = await axios.get(
+        `http://localhost:${VITE_PORT}/allnotes/${userId}`
+      );
+
+      setAllNotes(response.data);
+    } catch (error) {
+      console.error("Errore nel recupero delle note", error);
+      setAllNotes("Errore nel recupero delle note");
     }
   };
 
@@ -35,10 +49,6 @@ export function UserProvider({ children }) {
       console.error("Errore nel recupero degli investimenti:", error);
     }
   };
-
-  useEffect(() => {
-    fetchUserLogged();
-  }, []);
 
   const fetchUserLogged = async () => {
     const token = sessionStorage.getItem("token");
@@ -66,12 +76,17 @@ export function UserProvider({ children }) {
       setUser(userData);
       takeInvestimento(userData.id);
       takeSezioneI(userData.id);
+      takeAllNotes(userData.id);
     } catch (error) {
       console.error("Errore fetchUserLogged:", error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchUserLogged();
+  }, []);
 
   return (
     <userContext.Provider
@@ -82,6 +97,7 @@ export function UserProvider({ children }) {
         takeInvestimento,
         loading,
         fetchUserLogged,
+        allNotes,
       }}
     >
       {children}

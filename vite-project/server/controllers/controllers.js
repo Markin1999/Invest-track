@@ -105,6 +105,25 @@ export const getUser = async (req, res) => {
   }
 };
 
+export const takeAllNotes = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    const notes = await db.any(
+      `SELECT title,contenuto, created_at FROM notes WHERE user_id = $1 `,
+      [userId]
+    );
+
+    if (notes) {
+      return res.status(200).json(notes);
+    }
+
+    return res.status(404).json({ message: "Note non trovate" });
+  } catch (error) {
+    res.status(500).json({ message: "errore nella richiesta", error });
+  }
+};
+
 export const yahooSuggerimenti = async (req, res) => {
   const { nome } = req.body;
   try {
@@ -402,5 +421,24 @@ export const caricaNomeNote = async (req, res) => {
     res
       .status(500)
       .json({ message: "errore nel caricamento del nome'", error });
+  }
+};
+
+export const salvaNote = async (req, res) => {
+  const nome = req.body.nome;
+  const nota = req.body.nota;
+  const id_Inv = req.body.index;
+  const users_id = req.params.id;
+
+  try {
+    const response = await db.one(
+      `INSERT INTO notes (user_id, invest_id, title, contenuto) VALUES ($1, $2, $3, $4) RETURNING id`,
+      [users_id, id_Inv, nome, nota]
+    );
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.error(" Errore nel salvataggio", error);
+    res.status(500).json({ message: "errore nel salvataggio'", error });
   }
 };

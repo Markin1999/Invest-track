@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useUserContext } from "../contesti/useContext";
 
 const p = "mb-1 text-[#555] font-normal ";
 
@@ -15,7 +14,7 @@ export function SommaInvestimenti({ investimenti, setTakeNota }) {
       <h2 className="text-center text-[1.6rem] my-[2rem] font-semibold text-[#333]">
         I tuoi Investimenti Attivi
       </h2>
-      <div className="overflow-x-auto mx-auto max-w-screen-xl p-1 bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] rounded-[12px]">
+      <div className="overflow-x-auto mx-auto max-w-screen-xl p-1  rounded-[12px]">
         <div className={div}>
           {investimenti.map((x, index) => (
             <div

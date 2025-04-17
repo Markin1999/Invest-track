@@ -61,85 +61,92 @@ export function Registrazione() {
     }
   };
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8 ">
-      <div className="min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-        <h1 className="mt-10 text-center text-7xl/6 font-bold tracking-tight text-green-600">
-          INVE$T-TRACK
+    <div className="flex w-full items-center justify-center h-screen bg-[#1a73e8] px-2 ">
+      <div className="bg-white p-6 rounded-lg shadow-md m-16 gap-2 w-[500px]">
+        <h1 className="text-[#1a73e8] mb-6 text-[2em] w-full text-center justify-center font-semibold ">
+          Registrati a Invest-Track
         </h1>
-      </div>
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <label
-            htmlFor="Nome"
-            className="block text-sm/6 font-medium text-gray-900"
-          >
-            Nome:
-          </label>
-          <div className="mt-2">
+        <form className="flex flex-col space-y-4 gap-2" onSubmit={handleSubmit}>
+          <div className="flex  items-center w-full justify-between">
+            <div>
+              <label
+                htmlFor="Nome"
+                className="block text-sm/6 font-semibold text-gray-900 mb-3"
+              >
+                Nome:
+              </label>
+
+              <input
+                type="text"
+                name="nome"
+                className="border w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2"
+                id="nome"
+                placeholder="Nome..."
+                onChange={handleChange}
+                value={data.nome}
+                required
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="Cognome"
+                className="block text-sm/6 font-semibold text-gray-900 mb-3"
+              >
+                Cognome:
+              </label>
+              <input
+                type="text"
+                name="cognome"
+                id="cognome"
+                className="border w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2"
+                placeholder="Cognome..."
+                onChange={handleChange}
+                value={data.cognome}
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm/6 font-semibold text-gray-900 mb-3"
+            >
+              Email:
+            </label>
             <input
-              type="text"
-              name="nome"
-              className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-              id="nome"
-              placeholder="Nome..."
+              type="email"
+              name="email"
+              id="email"
+              className="border w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2"
+              placeholder="Email..."
               onChange={handleChange}
-              value={data.nome}
+              value={data.email}
               required
             />
           </div>
 
-          <label
-            htmlFor="Cognome"
-            className="block text-sm/6 font-medium text-gray-900"
-          >
-            Cognome:
-          </label>
-          <input
-            type="text"
-            name="cognome"
-            id="cognome"
-            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-            placeholder="Cognome..."
-            onChange={handleChange}
-            value={data.cognome}
-            required
-          />
-          <label
-            htmlFor="email"
-            className="block text-sm/6 font-medium text-gray-900"
-          >
-            Email:
-          </label>
-          <input
-            type="email"
-            name="email"
-            id="email"
-            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-            placeholder="Email..."
-            onChange={handleChange}
-            value={data.email}
-            required
-          />
-          <label
-            htmlFor="Password"
-            className="block text-sm/6 font-medium text-gray-900"
-          >
-            Password:
-          </label>
-          <input
-            type="password"
-            name="password"
-            id="password"
-            className="block border w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-green-600 sm:text-sm/6"
-            placeholder="Password..."
-            onChange={handleChange}
-            value={data.password}
-            required
-          />
+          <div>
+            <label
+              htmlFor="Password"
+              className="block text-sm/6 font-semibold text-gray-900 mb-3"
+            >
+              Password:
+            </label>
+            <input
+              type="password"
+              name="password"
+              id="password"
+              className="border w-full border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2"
+              placeholder="Password..."
+              onChange={handleChange}
+              value={data.password}
+              required
+            />
+          </div>
+
           <button
-            className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            disabled={message ? true : false}
             type="submit"
+            className="w-full bg-[#ffd600] text-[#111] rounded-2xl py-2 mt-6 font-semibold mx-auto px-6"
           >
             Avanti
           </button>
@@ -147,10 +154,13 @@ export function Registrazione() {
           {message && <p className="m-1 text-center">{message}</p>}
           {message && <hr className="my-2" />}
 
-          <div className="m-1 justify-center flex gap-2">
-            <p>Hai gia un account?</p>
-            <Link to="/" className="text-green-600 hover:underline">
-              Login
+          <div className="m-1 w-full items-center flex justify-center gap-1 mt-4 text-[0.9rem]">
+            <p>Hai già un account?</p>
+            <Link
+              to="/"
+              className="inline-block text-[#1a73e8] hover:underline text-[0.9rem]"
+            >
+              Accedi
             </Link>
           </div>
         </form>

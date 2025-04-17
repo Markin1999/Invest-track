@@ -11,7 +11,7 @@ import { SezioneInvestimenti } from "./componenti/SezioneInvestimenti";
 
 function App() {
   return (
-    <div className="bg-[#f2f4f8] flex flex-col min-h-screen">
+    <div className="bg-[url('https://www.transparenttextures.com/patterns/wood-pattern.png')] flex flex-col min-h-screen">
       <BrowserRouter>
         <UserProvider>
           <Routes>

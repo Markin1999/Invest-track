@@ -4,11 +4,15 @@ import { SommaInvestimenti } from "./SommaInvestimenti";
 import { SituazioneAttuale } from "./SituazioneAttuale";
 import { Note } from "./Note";
 import axios from "axios";
+
 const VITE_PORT = import.meta.env.VITE_PORT;
+
 export function Main() {
-  const { investimenti, user } = useUserContext();
+  const { investimenti, user, fetchUserLogged } = useUserContext();
+
   const [takeNota, setTakeNota] = useState({ set: false, index: "" });
   const [nome, setNome] = useState("");
+  const [nota, setNota] = useState("");
 
   const takeNome = async () => {
     console.log(user.id, takeNota.index);
@@ -23,6 +27,25 @@ export function Main() {
       setNome(response.data);
     } catch (error) {
       console.error("Errore nel recupero degli investimenti:", error);
+    }
+  };
+
+  const chargeNote = async () => {
+    if (!nota && !nome && !user.id && !takeNota.index) return;
+    try {
+      const response = await axios.post(
+        `http://localhost:${VITE_PORT}/aggiungiNota/${user.id}`,
+        {
+          nota: nota,
+          nome: nome,
+          index: Number(takeNota.index),
+        }
+      );
+
+      setTakeNota({ set: false, index: "index" });
+      fetchUserLogged();
+    } catch (error) {
+      console.error("Errore nel salvataggio", error);
     }
   };
 
@@ -61,10 +84,15 @@ export function Main() {
               <textarea
                 className=" border rounded-xl hover:border-[#ffd600] hover:border-[2px] border-[#ccc] resize-none p-4 m-3 shadow-[inset_0_1px_4px_rgba(0,0,0,0.05)] focus:outline-none w-full h-[300px] text-[1rem]"
                 placeholder="Scrivi qui la tua nota..."
+                onChange={(e) => setNota(e.target.value)}
+                value={nota}
               ></textarea>
               <div>
                 <div className="w-full flex justify-end">
-                  <button className=" bg-[#ffd600] text-[#333] font-medium py-2 px-6 rounded-xl hover:bg-yellow-400 transition">
+                  <button
+                    onClick={chargeNote}
+                    className=" bg-[#ffd600] text-[#333] font-medium py-2 px-6 rounded-xl hover:bg-yellow-400 transition"
+                  >
                     Salva
                   </button>
                 </div>
